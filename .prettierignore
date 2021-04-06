@@ -1,0 +1,11 @@
+.venv/
+# Ignore artifacts:
+build
+coverage
+# Ignore rust lang target:
+target
+# Ignore all go mod files:
+*.mod
+# Ignore all HTML files:
+**/templates/**/*.html
+
