@@ -12,7 +12,7 @@
 automock_unlocked=true
 DJANGO_SETTINGS_MODULE = "jubilant_task.settings"
 minversion = "6.0"
-addopts = "-ra -vv --disable-warnings"
+addopts = "-ra -vv --disable-warnings -W ignore::DeprecationWarning"
 python_files = [
   "test.py",
   "tests.py",
