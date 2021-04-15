@@ -27,23 +27,27 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
+DEFAULT_AUTO_FIELD ='django.db.models.BigAutoField'
 # Application definition
 
 INSTALLED_APPS = [
+    'django_extensions',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-'users.apps.UsersConfig', 
-'tasks.apps.TasksConfig',
+    'users.apps.UsersConfig', 
+    'tasks.apps.TasksConfig',
+    'rest_framework',
+    'corsheaders',
 ]
-
+CORS_ALLOW_ALL_ORIGINS=True
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',

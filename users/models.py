@@ -32,5 +32,8 @@ class Profile(Model):
     date_modified = DateTimeField(auto_now=True)
     is_public = BooleanField(default=False)
     is_active = BooleanField(default=True)
-    image = ImageField(default="default.webp", upload_to=user_directory_path)
+    image = ImageField(default="default.webp", upload_to=user_directory_path)    
+    # @cached_property
+    # def friends(self):
+    #     pass
 #  have rust task using celery or golang task to convert image files to webp.

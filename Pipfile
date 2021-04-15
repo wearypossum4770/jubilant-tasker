@@ -10,6 +10,7 @@ cuid = "*"
 pillow = "*"
 django-cors-headers = "*"
 pytz = "*"
+django-extensions = "*"
 
 [dev-packages]
 pytest = "*"

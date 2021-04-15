@@ -1,9 +1,17 @@
+from uuid import uuid4
 from datetime import date
 from django.db.models import (
-    Model, CharField, SET_NULL, BooleanField,DateTimeField, DateField
+    BooleanField,
+    CharField, 
+    DateField, 
+    DateTimeField, 
+    Model, 
+    SET_NULL,
+    UUIDField,
 )
 
 class Task(Model):
+    external_id =UUIDField(default=uuid4, primary_key=False)
     title=CharField(max_length=80)
     content=CharField(max_length=100)
     date_modified = DateTimeField(auto_now=True)
