@@ -4,14 +4,17 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-django = "*"
+Django = "*"
 djangorestframework = "*"
 cuid = "*"
-pillow = "*"
+Pillow = "*"
 django-cors-headers = "*"
 pytz = "*"
 
 [dev-packages]
+isort="*"
+black="*"
+pytest-black = "*"
 pytest = "*"
 pytest-django = "*"
 pytest-cov = "*"
@@ -21,3 +24,6 @@ django-extensions = "*"
 
 [requires]
 python_version = "3.8"
+
+[pipenv]
+allow_prereleases = true
