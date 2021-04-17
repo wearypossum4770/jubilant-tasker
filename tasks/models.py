@@ -21,7 +21,7 @@ from django.utils import timezone
 
 User = get_user_model()
 
-
+# idempotent_key
 def get_attachment_upload_dir(instance, filename):
     """Determine upload dir for task attachment files."""
     return "/".join(["tasks", "attachments", str(instance.task.id), filename])
