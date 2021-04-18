@@ -142,9 +142,9 @@ class BaseDatabaseCreation:
         the serialize_db_to_string() method.
         """
         data = StringIO(data)
-        table_names = set()
         # Load data in a transaction to handle forward references and cycles.
         with atomic(using=self.connection.alias):
+            table_names = set()
             # Disable constraint checks, because some databases (MySQL) doesn't
             # support deferred checks.
             with self.connection.constraint_checks_disabled():

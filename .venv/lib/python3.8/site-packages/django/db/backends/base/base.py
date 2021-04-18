@@ -226,10 +226,9 @@ class BaseDatabaseWrapper:
         """
         self.validate_thread_sharing()
         if self.queries_logged:
-            wrapped_cursor = self.make_debug_cursor(cursor)
+            return self.make_debug_cursor(cursor)
         else:
-            wrapped_cursor = self.make_cursor(cursor)
-        return wrapped_cursor
+            return self.make_cursor(cursor)
 
     def _cursor(self, name=None):
         self.ensure_connection()

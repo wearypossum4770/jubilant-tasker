@@ -111,19 +111,18 @@ class URLValidator(RegexValidator):
             super().__call__(value)
         except ValidationError as e:
             # Trivial case failed. Try for possible IDN domain
-            if value:
-                try:
-                    scheme, netloc, path, query, fragment = urlsplit(value)
-                except ValueError:  # for example, "Invalid IPv6 URL"
-                    raise ValidationError(self.message, code=self.code, params={'value': value})
-                try:
-                    netloc = punycode(netloc)  # IDN -> ACE
-                except UnicodeError:  # invalid domain part
-                    raise e
-                url = urlunsplit((scheme, netloc, path, query, fragment))
-                super().__call__(url)
-            else:
+            if not value:
                 raise
+            try:
+                scheme, netloc, path, query, fragment = urlsplit(value)
+            except ValueError:  # for example, "Invalid IPv6 URL"
+                raise ValidationError(self.message, code=self.code, params={'value': value})
+            try:
+                netloc = punycode(netloc)  # IDN -> ACE
+            except UnicodeError:  # invalid domain part
+                raise e
+            url = urlunsplit((scheme, netloc, path, query, fragment))
+            super().__call__(url)
         else:
             # Now verify IPv6 in the netloc part
             host_match = re.search(r'^\[(.+)\](?::\d{2,5})?$', urlsplit(value).netloc)
