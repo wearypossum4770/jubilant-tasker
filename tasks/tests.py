@@ -1,10 +1,11 @@
+from django.test import TestCase
 import pytest
 from django.test import TestCase
 from django.utils import timezone
 
 from tasks.models import Task
 
-
+today=timezone.now()
 # https://devcenter.heroku.com/articles/heroku-redis#upgrading-a-heroku-redis-version
 # Create your tests here.
 def test_versioning():
@@ -23,14 +24,14 @@ class TestTasks(TestCase):
         )
         Task.objects.create(
             title="ITM304",
-            content="Week 9 Problem Set # 4: Convert VARCHAR() string date to data type DATE",
-            date_due=timezone.now() + timezone.timedelta(days=1),
+            content="Week 9 Problem Set",
+            date_due=today+ timezone.timedelta(days=1),
             completed=True,
         )
         Task.objects.create(
             title="ITM304",
-            content="Week 9 Problem Set # 4: Convert VARCHAR() string date to data type DATE",
-            date_due=timezone.now() + timezone.timedelta(days=0),
+            content="Week 9 Problem Set",
+            date_due=today + timezone.timedelta(days=0),
             completed=True,
         )
         cls.tasks = Task.objects.all()

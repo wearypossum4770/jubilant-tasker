@@ -1,12 +1,13 @@
+from uuid import uuid4
 from datetime import date
 from pathlib import Path
-
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.db.models import (
     CASCADE,
     SET_NULL,
+UUIDField,
     BooleanField,
     CharField,
     DateField,
@@ -28,6 +29,7 @@ def get_attachment_upload_dir(instance, filename):
 
 
 class Task(Model):
+    external_id =UUIDField(default=uuid4, primary_key=False)
     title = CharField(max_length=80)
     content = CharField(max_length=100)
     date_modified = DateTimeField(auto_now=True)
