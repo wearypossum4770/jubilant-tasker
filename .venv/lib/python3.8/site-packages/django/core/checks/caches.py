@@ -38,7 +38,7 @@ def check_cache_location_not_exposed(app_configs, **kwargs):
             if not isinstance(cache, FileBasedCache):
                 continue
             cache_path = pathlib.Path(cache._dir).resolve()
-            if any(path == cache_path for path in paths):
+            if cache_path in paths:
                 relation = 'matches'
             elif any(path in cache_path.parents for path in paths):
                 relation = 'is inside'

@@ -328,13 +328,12 @@ class Command(BaseCommand):
             cmp_fmt = None
 
         if len(parts) > 1:
-            if parts[-1] in self.serialization_formats:
-                ser_fmt = parts[-1]
-                parts = parts[:-1]
-            else:
+            if parts[-1] not in self.serialization_formats:
                 raise CommandError(
                     "Problem installing fixture '%s': %s is not a known "
                     "serialization format." % ('.'.join(parts[:-1]), parts[-1]))
+            ser_fmt = parts[-1]
+            parts = parts[:-1]
         else:
             ser_fmt = None
 
