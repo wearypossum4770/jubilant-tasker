@@ -1,6 +1,11 @@
-import { useEffect , useReducer} from "react"
+import { useEffect , useReducer,useState} from "react"
 import {reducer, initialState} from './todo_helpers'
 export default function ToDo(){
+    const [list, setlist] = useState([
+        { text: "Learn about React" },
+        { text: "Meet friend for lunch" },
+        { text: "Build really cool todo app" }
+      ]);
     const [state, dispatch] = useReducer(reducer, initialState)
     useEffect(()=>{
         try{
