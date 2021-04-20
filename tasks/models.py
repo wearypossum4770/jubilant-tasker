@@ -1,22 +1,25 @@
-from uuid import uuid4
 from datetime import date
 from pathlib import Path
+from uuid import uuid4
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.db.models import (
     CASCADE,
     SET_NULL,
-UUIDField,
     BooleanField,
     CharField,
     DateField,
     DateTimeField,
+    DecimalField,
     FileField,
     ForeignKey,
+    ManyToManyField,
     Model,
     PositiveIntegerField,
     TextField,
+    UUIDField,
 )
 from django.utils import timezone
 
@@ -25,11 +28,15 @@ User = get_user_model()
 # idempotent_key
 def get_attachment_upload_dir(instance, filename):
     """Determine upload dir for task attachment files."""
-    return "/".join(["tasks", "attachments", str(instance.task.id), filename])
+    return f"{tasks}/{attachments}/{str(instance.task.id)}/{filename}"
+class Project(Model):
+    name = CharField(max_length=200)
+    last_modified = DateTimeField(auto_now=True)
 
 
 class Task(Model):
-    external_id =UUIDField(default=uuid4, primary_key=False)
+    project = ForeignKey(Project, on_delete=SET_NULL, null=True)
+    external_id = UUIDField(default=uuid4, primary_key=False)
     title = CharField(max_length=80)
     content = CharField(max_length=100)
     date_modified = DateTimeField(auto_now=True)
@@ -98,3 +105,36 @@ class Attachment(Model):
 
     def extension(self):
         return self.filename.suffix
+
+
+class Note(Model):
+    note = TextField()
+
+
+class TimeLog(Model):
+    time_spent = DecimalField(max_digits=4, decimal_places=2)
+    notes = ManyToManyField(Note, blank=True)
+
+    @property
+    def init_track_fields(self):
+        return ("time_spent",)
+
+    def add_track_save_note(self):
+        field_track = {}
+        for field in self.init_track_fields:
+            value = getattr(self, field)
+            orig_value = getattr(self, f"_original_{field}")
+            if value != orig_value:
+                field_track[field] = [orig_value, value]
+
+        if field_track:
+            note_str = "The following fields were updated:<br /><br />"
+            for k, v in field_track.iteritems():
+                note_str += f"<b>{k}:</b> <i>{v[0]}</i><b>&rarr;</b> {v[1]}<br />"
+            note = Note.objects.create(note=note_str)
+            self.notes.add(note)
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            self.add_track_save_note()
+        super().save(*args, **kwargs)
