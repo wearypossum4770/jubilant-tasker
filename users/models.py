@@ -39,10 +39,12 @@ class User(AbstractUser):
     roles = ManyToManyField(Role)
     middle_name = CharField(max_length=30, blank=True)
     date_of_birth = DateField(null=True, blank=True)
+
     @property
     def email_user(self, subject, message, from_email=None, **kwargs):
-        '''Sends an email to this User.'''
+        """Sends an email to this User."""
         send_mail(subject, message, from_email, [self.email], **kwargs)
+
 
 class Profile(Model):
     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
@@ -55,4 +57,6 @@ class Profile(Model):
     # @cached_property
     # def friends(self):
     #     pass
+
+
 #  have rust task using celery or golang task to convert image files to webp.

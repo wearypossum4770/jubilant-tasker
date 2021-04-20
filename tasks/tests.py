@@ -1,17 +1,18 @@
-from django.test import TestCase
 import pytest
 from django.test import TestCase
 from django.utils import timezone
 
 from tasks.models import Task
 
-today=timezone.now()
+today = timezone.now()
 # https://devcenter.heroku.com/articles/heroku-redis#upgrading-a-heroku-redis-version
 # Create your tests here.
 def test_versioning():
     first_check = r"^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"
     second_check = r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"
-    assert True ==True
+    assert True == True
+
+
 class TestTasks(TestCase):
     @classmethod
     def setUpClass(cls):
@@ -25,7 +26,7 @@ class TestTasks(TestCase):
         Task.objects.create(
             title="ITM304",
             content="Week 9 Problem Set",
-            date_due=today+ timezone.timedelta(days=1),
+            date_due=today + timezone.timedelta(days=1),
             completed=True,
         )
         Task.objects.create(

@@ -3,9 +3,7 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-PROJECT_SETTINGS= {
-    'defaults':(('HAS_AUTOCOMPLETE', True), ('HAS_TASK_MERGE', False))
-}
+PROJECT_SETTINGS = {"defaults": (("HAS_AUTOCOMPLETE", True), ("HAS_TASK_MERGE", False))}
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 

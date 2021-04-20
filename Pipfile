@@ -4,16 +4,17 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-Django = "*"
 djangorestframework = "*"
 cuid = "*"
-Pillow = "*"
 django-cors-headers = "*"
 pytz = "*"
+django = "*"
+pillow = "*"
+numpy = "*"
 
 [dev-packages]
-isort="*"
-black="*"
+isort = "*"
+black = "*"
 pytest-black = "*"
 pytest = "*"
 pytest-django = "*"
