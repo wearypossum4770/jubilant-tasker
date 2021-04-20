@@ -1,0 +1,194 @@
+https://dev.to/josephmidura/how-to-manage-multiple-ssh-key-pairs-1ik
+https://dev.to/abdulbasit313/my-top-5-methods-to-develop-uis-faster-in-reactjs-4blg
+https://gist.github.com/joshbuchea/6f47e86d2510bce28f8e7f42ae84c716
+
+
+
+Skip to content
+
+
+
+8
+
+1
+
+10
+
+How to Manage Multiple SSH Key Pairs
+#git #beginners #ssh
+josephmidura profile image
+Joseph Midura
+Apr 18 ・3 min read
+I recently overheard someone say that he uses the same SSH key for all of his accounts, which is a bad idea from a security perspective. Additionally, Bitbucket recommends users replace their SSH keys once a year for security. Following these steps will ensure that you can.
+
+When I initially started managing multiple SSH key/password combinations on my personal machine, I learned best practices from a variety of sources. I’m writing this information down in one place for the benefit of others. My current OS of choice is MacOS, but these instructions should work for any *nix system.
+
+First
+Open terminal and navigate to ~/.ssh to generate a new SSH key:
+
+ssh-keygen -t rsa -f key_name -b 4096
+Here is what each flag means:
+
+-t specifies the algorithm that makes the key.
+-f specifies a custom name for the key (assuming you're in the ~/.ssh directory), and an alternate location if it’s in the form of a path.
+personal_key is the name of the key. Make this as specific as possible.
+-b specifies how many bits long the key will be. Bitbucket's current documentation recommends 2048 bits, but I recommend 4096 as RSA will soon be replaced by the ed25519 public key algorithm. I always use a key name that is specific and makes sense to me. This makes key management easier in the long term.
+You should use a passphrase when prompted.
+
+Second
+When you complete the first step two files are created: key_name and key_name.pub. The first is your private key and the second (with the .pub extension) is your public key.
+Create a known_hosts file for each account you have because it makes diagnosing issues easier when you have multiple keys. Ideally the name of this file is similar enough to the key name that you aren’t confused later.
+
+touch known_hosts_keyname 
+Third
+The config file sets options for each host. Create the config file if it doesn’t already exist and then open it for editing. I label each key for visual neatness and to avoid confusion as the list of keys gets longer over time. Create a comment using the # at the start of a line to label each host.
+
+config
+
+Here is the breakdown of what each line means:
+
+The URL on the HostName line is the base URL where the repository resides. For example, if you have a personal account on github with personal projects, the URL will be github.com.
+Host is a pattern matcher that is used to differentiate between these sets of configurations. Keep it the same as the HostName so it matches hosts in connections correctly without additional specification.
+User for git based systems will be git. The value of User will be different if you connect to something else (i.e. ec2-user for connecting to an Amazon AWS EC2 instance)
+IdentityFile asks for the location of the identity key we made. Type in the respective path here.
+UserKnownHostsFile specifies an exact location to store all hosts you connect to when you’re using that profile. Provide the respective paths here and choose a unique known hosts file name (see step 2 above) so that troubleshooting and key maintenance over time is easier.
+IdentitiesOnly specifies that only the keys provided must be used to connect to a host, even if another service like the ssh-agent offers a key for use.
+Fourth
+Add keys to ssh agent if passphrase was used. Skip to the next step if you didn't use a passphrase. Start the ssh agent in the terminal:
+
+eval "$(ssh-agent -s)"
+Add private keys to the agent in terminal:
+
+ssh-add -K path_to_private_keyname
+Note that the -K option works only on mac for keychain access.
+
+Fifth
+Add public Keys to clipboard:
+
+cat key_name.pub | pbcopy 
+Finally, paste the public key into the appropriate account.
+
+With multiple keys, I have the option of creating new keys as needed to keep each connection secure. If I have a single compromised key, then I only worry about changing that single key. My config file makes it easy for me to use multiple keys.
+
+References
+Bitbucket documentation
+Github documentation
+
+Discussion (6)
+Subscribe
+pic
+Add to the discussion
+ 
+brandonwallace profile image
+brandon_wallace
+•
+Apr 19
+
+Nice article. I recommend adding a comment and a file name to ssh-keygen.
+-C "<comment>"
+-f /path/to/key
+Examples:
+$ ssh-keygen -t rsa -b 4096 -C "brandon@home-example.com" -f ~/.ssh/id_rsa_home
+$ ssh-keygen -t ed25519 -C "brandon@work-example.com" -f ~/.ssh/id_ed25519_work
+
+1
+ 
+phlash909 profile image
+Phil Ashby
+•
+Apr 18
+
+Thanks Joseph, this really is something I should do more often than I do (to reduce the attack surface of a compromised key)! I tend to separate by activity area (ie: work, home, project) rather than individual targets.
+
+Also worth noting is that password managers frequently integrate via ssh-agent (eg: techrepublic.com/article/how-to-in...), which can help keep everything tidy and safely enable portability (how many times have I left my offline key store at home.. sheesh!).
+
+As a final security comment, ssh private keys are only as safe as their pass-phrases, so when you say "Use a passphrase when prompted.", that's likely the weakest link in this setup - possibly another good reason to delegate to a password manager with a strong pass phrase.
+
+
+1
+ 
+josephmidura profile image
+Joseph Midura
+•
+Apr 18
+
+I agree that password managers are a must, and I struggled with how in depth to make this post to keep it beginner friendly. I'll use your suggestion for an optional/advanced section when I have time to do some edits.
+
+
+1
+ 
+alexeydc profile image
+Alexey
+•
+Apr 18
+
+I'd recommend using
+ssh-keygen -t ed25519 -f keyname
+ed25519 is much better than RSA - more secure, shorter keys.
+
+E.g. see medium.com/risan/upgrade-your-ssh-...
+
+
+1
+ 
+josephmidura profile image
+Joseph Midura
+•
+Apr 18
+
+This is an excellent point. While researching this article, I was surprised to see that Bitbucket documentation uses RSA by default (April 2021). I'll likely change my first step to recommend ed25519 when I have a chance to do some edits.
+
+
+1
+ 
+scottsawyer profile image
+Scott Sawyer
+•
+Apr 19
+
+Good post. Another ssh_config trick i sometimes use is ForwardAgent, so i can connect through to a third party service directly from a tunneled server using my local ssh_agent. (Like if you have to connect to github from a remote server)
+
+
+1
+Code of Conduct • Report abuse
+Read next
+dhhruv profile image
+YouTua - Download any Videos Instantly...
+Dhruv Panchal - Apr 16
+
+kiranrajvjd profile image
+Do you really know JavaScript ? Part 1: Undefined
+Kiran Raj R - Apr 16
+
+otumianempire profile image
+Python3 Programming - Exercise 24
+Otu Michael - Apr 7
+
+otumianempire profile image
+Python3 Programming - Exercise 23
+Otu Michael - Apr 3
+
+Joseph Midura profile image
+Joseph Midura
+software developer in Austin
+Follow
+JOINED
+Feb 22, 2021
+Trending on DEV Community 
+ 🐤🥇 Jasper de Jager profile image
+Iconic developers | part 2 🤓🦄🚫
+#programming #discuss #webdev #watercooler
+Amelia Vieira Rosado profile image
+What's the best dev joke or pun you know? 😂
+#discuss #watercooler #jokes
+Babi-B profile image
+VS code Plugins and built-ins to boost productivity (with previews)
+#webdev #vscode #codequality #productivity
+ssh-keygen -t rsa -f key_name -b 4096
+Home Reading List Listings Podcasts Videos Tags Code of Conduct FAQ DEV Shop Sponsors About Privacy Policy Terms of use Contact Write a post
+    
+DEV Community – A constructive and inclusive social network for software developers. With you every step of your journey.
+
+Built on Forem — the open source software that powers DEV and other inclusive communities.
+
+Made with love and Ruby on Rails. DEV Community © 2016 - 2021.
