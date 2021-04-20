@@ -60,8 +60,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "jubilant_task.wsgi.application"
-
+#WSGI_APPLICATION = "jubilant_task.wsgi.application"
+ASGI_APPLICATION = "jubilant_task.users.application"
 AUTH_USER_MODEL = "users.User"
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
