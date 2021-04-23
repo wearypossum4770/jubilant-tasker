@@ -45,7 +45,13 @@ class User(AbstractUser):
         """Sends an email to this User."""
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
+    def read(self):
+        self.last_read_date = timezone.now()
+        self.save()
 
+    def unread_messages(self):
+        return Message.objects.filter(created_at__gt=self.last_read_date) \
+                              .count()
 class Profile(Model):
     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
     user = OneToOneField(get_user_model(), on_delete=SET_NULL, null=True)
