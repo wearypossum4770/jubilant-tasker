@@ -39,13 +39,25 @@ class User(AbstractUser):
     roles = ManyToManyField(Role)
     middle_name = CharField(max_length=30, blank=True)
     date_of_birth = DateField(null=True, blank=True)
+    last_read_date = models.DateTimeField(
+        auto_now_add=True,
+        blank=False,
+        null=False
+    )
+    online = models.BooleanField(null=False, blank=False, default=False)
 
     @property
     def email_user(self, subject, message, from_email=None, **kwargs):
         """Sends an email to this User."""
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
+    def read(self):
+        self.last_read_date = timezone.now()
+        self.save()
 
+    def unread_messages(self):
+        return Message.objects.filter(created_at__gt=self.last_read_date) \
+                              .count()
 class Profile(Model):
     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
     user = OneToOneField(get_user_model(), on_delete=SET_NULL, null=True)
